@@ -1,0 +1,153 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg: #050816;
+  --color-surface: #0F172A;
+  --color-card: #111827;
+  --color-primary: #4F8EF7;
+  --color-accent: #60A5FA;
+  --color-text: #F8FAFC;
+  --color-muted: #94A3B8;
+  --color-border-glass: rgba(255, 255, 255, 0.06);
+  --color-border-subtle: rgba(255, 255, 255, 0.08);
+
+  --color-bg-light: #F8FAFC;
+  --color-surface-light: #FFFFFF;
+  --color-card-light: #F1F5F9;
+  --color-text-light: #0F172A;
+  --color-muted-light: #64748B;
+  --color-border-glass-light: rgba(15, 23, 42, 0.06);
+  --color-border-subtle-light: rgba(15, 23, 42, 0.08);
+
+  --font-sora: 'Sora', sans-serif;
+  --font-inter: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  --radius-sm: 12px;
+  --radius-md: 18px;
+  --radius-lg: 24px;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: var(--font-inter);
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  ::selection {
+    background-color: rgba(79, 142, 247, 0.3);
+    color: #F8FAFC;
+  }
+}
+
+@layer utilities {
+  .glass {
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--color-border-glass);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+  }
+
+  .glass-card {
+    background: rgba(17, 24, 39, 0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--color-border-subtle);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+  }
+
+  .text-gradient {
+    background: linear-gradient(135deg, #4F8EF7 0%, #60A5FA 50%, #93C5FD 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .gradient-border {
+    position: relative;
+  }
+
+  .gradient-border::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(79, 142, 247, 0.4), rgba(96, 165, 250, 0.1));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  .glow-primary {
+    box-shadow: 0 0 40px rgba(79, 142, 247, 0.15);
+  }
+
+  .glow-accent {
+    box-shadow: 0 0 40px rgba(96, 165, 250, 0.12);
+  }
+}
+
+/* Light theme overrides */
+html.light body {
+  background-color: var(--color-bg-light);
+  color: var(--color-text-light);
+}
+
+html.light .glass {
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid var(--color-border-glass-light);
+}
+
+html.light .glass-card {
+  background: rgba(241, 245, 249, 0.8);
+  border: 1px solid var(--color-border-subtle-light);
+}
+
+html.light ::selection {
+  background-color: rgba(79, 142, 247, 0.2);
+  color: #0F172A;
+}
+
+html.light :where(.text-text) {
+  color: var(--color-text-light);
+}
+html.light :where(.text-muted) {
+  color: var(--color-muted-light);
+}
+html.light :where(.bg-bg) {
+  background-color: var(--color-bg-light);
+}
+html.light :where(.bg-surface) {
+  background-color: var(--color-surface-light);
+}
+html.light :where(.bg-card) {
+  background-color: var(--color-card-light);
+}
+html.light :where(.border-border-glass) {
+  border-color: var(--color-border-glass-light);
+}
+html.light :where(.border-border-subtle) {
+  border-color: var(--color-border-subtle-light);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
