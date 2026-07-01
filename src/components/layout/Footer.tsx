@@ -3,7 +3,7 @@ import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { SiWechat } from "@icons-pack/react-simple-icons";
 import wechatQR from "@/assets/images/wechat.png";
-import { Mail, Heart } from 'lucide-react';
+import { Mail } from 'lucide-react';
 import { GitHubIcon, LinkedInIcon, XIcon } from '@/components/common/Icons';
 import { NAV_LINKS } from '@/constants';
 import logo from "@/assets/images/logo.png";
