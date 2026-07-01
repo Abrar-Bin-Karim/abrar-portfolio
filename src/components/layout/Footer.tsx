@@ -1,4 +1,8 @@
 import { Link } from 'react-router-dom';
+import { useState, useRef, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { SiWechat } from "@icons-pack/react-simple-icons";
+import wechatQR from "@/assets/images/wechat.png";
 import { Mail, Heart } from 'lucide-react';
 import { GitHubIcon, LinkedInIcon, XIcon } from '@/components/common/Icons';
 import { NAV_LINKS } from '@/constants';
@@ -6,6 +10,37 @@ import logo from "@/assets/images/logo.png";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
+  const [showWechat, setShowWechat] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const popupRef = useRef<HTMLDivElement>(null);
+  const copyWechat = async () => {
+  await navigator.clipboard.writeText("abrarbinkarim");
+
+  setCopied(true);
+
+  setTimeout(() => {
+    setCopied(false);
+  }, 2000);
+};
+
+useEffect(() => {
+  function handleClickOutside(event: MouseEvent) {
+    if (
+      popupRef.current &&
+      !popupRef.current.contains(event.target as Node)
+    ) {
+      setShowWechat(false);
+    }
+  }
+
+  if (showWechat) {
+    document.addEventListener("mousedown", handleClickOutside);
+  }
+
+  return () => {
+    document.removeEventListener("mousedown", handleClickOutside);
+  };
+}, [showWechat]);
 
   return (
     <footer className="border-t border-border-glass bg-surface/50">
@@ -67,6 +102,65 @@ export default function Footer() {
               >
                 <XIcon className="w-5 h-5" />
               </a>
+
+              <div
+  className="relative"
+  ref={popupRef}
+>
+
+  <button
+    type="button"
+    onClick={() => setShowWechat(!showWechat)}
+    className="p-2.5 rounded-[12px] bg-card border border-border-subtle text-muted hover:text-text hover:border-primary/30 transition-all"
+    aria-label="WeChat"
+  >
+    <SiWechat className="w-5 h-5" />
+  </button>
+
+  <AnimatePresence>
+
+    {showWechat && (
+
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9, y: 10 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.9, y: 10 }}
+        transition={{ duration: 0.2 }}
+        className="absolute bottom-14 right-0 w-56 rounded-2xl glass-card border border-border-subtle p-4 shadow-2xl z-50"
+      >
+
+        <img
+          src={wechatQR}
+          alt="WeChat QR"
+          className="w-full rounded-xl"
+        />
+
+        <p className="text-center mt-3 font-medium text-text">
+          abrarbinkarim
+        </p>
+
+        <button
+          type="button"
+          onClick={copyWechat}
+          className="mt-3 w-full rounded-lg bg-primary py-2 text-white hover:opacity-90"
+        >
+          Copy ID
+        </button>
+
+        {copied && (
+          <p className="text-center text-green-400 text-sm mt-2">
+            ✓ Copied!
+          </p>
+        )}
+
+      </motion.div>
+
+    )}
+
+  </AnimatePresence>
+
+</div>
+
               <a
                 href="mailto:abrarkarim@qq.com"
                 className="p-2.5 rounded-[12px] bg-card border border-border-subtle text-muted hover:text-text hover:border-primary/30 transition-all"
@@ -78,14 +172,11 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-12 pt-8 border-t border-border-glass flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-muted text-sm">
-            &copy; {currentYear} Abrar Bin Karim. All rights reserved.
-          </p>
-          <p className="text-muted text-sm flex items-center gap-1">
-            Built with <Heart className="w-4 h-4 text-primary fill-primary" /> using React + TypeScript
-          </p>
-        </div>
+        <div className="mt-12 pt-8 border-t border-border-glass flex">
+  <p className="text-muted text-sm ml-auto text-right">
+    &copy; {currentYear} Abrar Bin Karim. All rights reserved.
+  </p>
+</div>
       </div>
     </footer>
   );

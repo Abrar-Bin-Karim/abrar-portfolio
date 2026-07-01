@@ -1,7 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Mail, MapPin, Send, CheckCircle2, Loader2 } from 'lucide-react';
 import { GitHubIcon, LinkedInIcon, XIcon } from '@/components/common/Icons';
+import { SiWechat } from "@icons-pack/react-simple-icons";
+import wechatQR from "@/assets/images/wechat.png";
 import { useInView } from '@hooks/useScrollAnimation';
 import PageTransition from '@components/layout/PageTransition';
 import SectionHeading from '@components/ui/SectionHeading';
@@ -17,6 +19,9 @@ export default function Contact() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const [showWechat, setShowWechat] = useState(false);
+  const wechatPopupRef = useRef<HTMLDivElement>(null);
 
   const { ref, isInView } = useInView<HTMLDivElement>();
 
@@ -41,6 +46,35 @@ export default function Contact() {
       [e.target.name]: e.target.value,
     }));
   };
+
+  const copyWechat = async () => {
+    await navigator.clipboard.writeText("abrarbinkarim");
+
+    setCopied(true);
+
+    setTimeout(() => {
+    setCopied(false);
+    }, 2000);
+  };
+
+useEffect(() => {
+  function handleClickOutside(event: MouseEvent) {
+    if (
+      wechatPopupRef.current &&
+      !wechatPopupRef.current.contains(event.target as Node)
+    ) {
+      setShowWechat(false);
+    }
+  }
+
+  if (showWechat) {
+    document.addEventListener("mousedown", handleClickOutside);
+  }
+
+  return () => {
+    document.removeEventListener("mousedown", handleClickOutside);
+  };
+}, [showWechat]);
 
   return (
     <PageTransition>
@@ -94,39 +128,91 @@ export default function Contact() {
                     </div>
                   </div>
                 </div>
+<div>
+  <h4 className="font-sora font-semibold text-text mb-4">
+    Let's Get Connected
+  </h4>
 
-                <div>
-                  <h4 className="font-sora font-semibold text-text mb-4">Follow Me</h4>
-                  <div className="flex gap-3">
-                    <a
-                      href="https://github.com/Abrar-Bin-Karim"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="p-3 rounded-[12px] glass-card text-muted hover:text-text hover:border-primary/30 transition-all"
-                      aria-label="GitHub"
-                    >
-                      <GitHubIcon className="w-5 h-5" />
-                    </a>
-                    <a
-                      href="https://www.linkedin.com/in/abrar-bin-karim"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="p-3 rounded-[12px] glass-card text-muted hover:text-text hover:border-primary/30 transition-all"
-                      aria-label="LinkedIn"
-                    >
-                      <LinkedInIcon className="w-5 h-5" />
-                    </a>
-                    <a
-                      href="https://x.com/Abrar_Bin_Karim"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="p-3 rounded-[12px] glass-card text-muted hover:text-text hover:border-primary/30 transition-all"
-                      aria-label="X"
-                    >
-                      <XIcon className="w-5 h-5" />
-                    </a>
-                  </div>
-                </div>
+  <div className="flex gap-3">
+    {/* GitHub */}
+    <a
+      href="https://github.com/Abrar-Bin-Karim"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="p-3 rounded-[12px] glass-card text-muted hover:text-text hover:border-primary/30 transition-all"
+    >
+      <GitHubIcon className="w-5 h-5" />
+    </a>
+
+    {/* LinkedIn */}
+    <a
+      href="https://www.linkedin.com/in/abrar-bin-karim"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="p-3 rounded-[12px] glass-card text-muted hover:text-text hover:border-primary/30 transition-all"
+    >
+      <LinkedInIcon className="w-5 h-5" />
+    </a>
+
+    {/* X */}
+    <a
+      href="https://x.com/Abrar_Bin_Karim"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="p-3 rounded-[12px] glass-card text-muted hover:text-text hover:border-primary/30 transition-all"
+    >
+      <XIcon className="w-5 h-5" />
+    </a>
+
+    {/* WeChat */}
+    <div
+  className="relative"
+  ref={wechatPopupRef}
+    >
+      <button
+        type="button"
+        onClick={() => setShowWechat(!showWechat)}
+        className="p-3 rounded-[12px] glass-card text-muted hover:text-text hover:border-primary/30 transition-all"
+      >
+        <SiWechat className="w-5 h-5" />
+      </button>
+
+      {showWechat && (
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9, y: 10 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ duration: 0.25 }}
+          className="absolute bottom-16 right-0 w-56 rounded-2xl glass-card border border-border-subtle p-4 shadow-2xl z-50"
+        >
+          <img
+            src={wechatQR}
+            alt="WeChat QR"
+            className="w-full rounded-xl"
+          />
+
+          <p className="text-center mt-3 font-medium text-text">
+            abrarbinkarim
+          </p>
+
+          <button
+            type="button"
+            onClick={copyWechat}
+            className="mt-3 w-full rounded-lg bg-primary py-2 text-white hover:opacity-90"
+          >
+            Copy ID
+          </button>
+
+          {copied && (
+            <p className="text-center text-green-400 text-sm mt-2">
+              ✓ Copied!
+            </p>
+          )}
+        </motion.div>
+                      )}
+                        </div>
+                      </div>
+                    </div>
+                  
               </motion.div>
 
               <motion.div
